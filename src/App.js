@@ -1,18 +1,31 @@
-import React from "react";
-import Die from "./components/Die";
+import React from "react"
+import Die from "./components/Die"
+import { nanoid } from 'nanoid'
 
 export default function App() {
 
   function allNewDice() {
-    return Array.from({ length: 10 }, () => Math.ceil(Math.random() * 6))
+    const newDice = []
+    for (let i = 0; i < 10; i++) {
+      newDice.push({
+        value: Math.ceil(Math.random() * 6),
+        isHeld: false,
+        id: nanoid()
+      })
+    }
+    return newDice
   }
 
-  const [randomNumbers, setRandomNumbers] = React.useState(allNewDice())
+  const [randomDice, setRandomDice] = React.useState(allNewDice())
 
-  const allDice = randomNumbers.map(number => <Die value={number} />)
+  const allDice = randomDice.map(die => <Die key={die.id} die={die} holdDice={holdDice}/>)
 
   function rollDice() {
-    setRandomNumbers(allNewDice)
+    setRandomDice(allNewDice)
+  }
+
+  function holdDice(event, id) {
+    setRandomDice(prevState => prevState.map(die => die.id === id ? { ...die, isHeld: true} : die ))
   }
 
   return (
